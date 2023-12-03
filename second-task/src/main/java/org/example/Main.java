@@ -17,6 +17,11 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) {
+        int n = init();
+        doTask(n);
+    }
+
+    public static int init() {
         int n;
         try (Scanner scanner = new Scanner(System.in)) {
             n = scanner.nextInt();
@@ -27,10 +32,10 @@ public class Main {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        doTask(n);
+        return n;
     }
 
-    public static void doTask(int n) {
+    public static void doTask(int n)  {
         Semaphore semaphore = new Semaphore(1);
         Thread thread = new Thread(() -> rewriteFile(n, semaphore));
         Thread thread2 = new Thread(() -> rewriteFile(n, semaphore));
@@ -44,7 +49,6 @@ public class Main {
             throw new RuntimeException(e);
         }
 
-
         try (Scanner scanner = new Scanner(new File("Output.txt"))) {
             System.out.println("File contents: ");
             while (scanner.hasNext()) {
@@ -57,7 +61,6 @@ public class Main {
     }
 
     static void rewriteFile(int n, Semaphore semaphore) {
-        System.out.println(Thread.currentThread().getName() + " started");
         int k;
         while (true) {
             try {
@@ -68,13 +71,14 @@ public class Main {
                     throw new RuntimeException(e);
                 }
 
-                if(k==n){
+                if (k == n) {
                     semaphore.release();
                     break;
                 }
 
                 System.out.println("old value: " + k + " new value: " + ++k + " " + Thread.currentThread().getName());
-                try (FileWriter writer = new FileWriter("Output.txt")){
+
+                try (FileWriter writer = new FileWriter("Output.txt")) {
                     writer.write(String.valueOf(k));
                 } catch (IOException e) {
                     throw new RuntimeException(e);

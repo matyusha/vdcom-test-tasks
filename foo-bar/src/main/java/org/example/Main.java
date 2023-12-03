@@ -8,9 +8,6 @@ public class Main {
         int n;
         try (Scanner scanner = new Scanner(System.in)) {
             System.out.println("Enter integer value: ");
-            while (!scanner.hasNextInt()) {
-                scanner.nextLine();
-            }
             n = scanner.nextInt();
         }
         thirdDecision(n);
@@ -33,21 +30,19 @@ public class Main {
     }
 
     public static void secondDecision(int n) {
-        IntStream.range(1, n + 1)
-                .mapToObj(i -> {
-                    if (i % 3 == 0) {
-                        if (i % 5 == 0) {
-                            return "FooBar";
-                        } else {
-                            return "Foo";
-                        }
-                    } else if (i % 5 == 0) {
-                        return "Bar";
-                    } else {
-                        return i;
-                    }
-                })
-                .forEach(System.out::println);
+        IntStream.range(1, n + 1).mapToObj(i -> {
+            if (i % 3 == 0) {
+                if (i % 5 == 0) {
+                    return "FooBar";
+                } else {
+                    return "Foo";
+                }
+            } else if (i % 5 == 0) {
+                return "Bar";
+            } else {
+                return i;
+            }
+        }).forEach(System.out::println);
     }
 
     public static void thirdDecision(int n) {
