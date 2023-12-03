@@ -1,0 +1,5 @@
+proportion,tasks
+1.0 pyramid = 1.4 bar,1 pyramid = ? bar
+1.0 giraffe = 40.0 hare,1 giraffe = ? hare
+2.0 kilobyte = 16384.0 bit,2 kilobyte = ? bit
+1536.0 kilobyte = 1.5 megabyte,1536 kilobyte = ? megabyte

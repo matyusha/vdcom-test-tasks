@@ -1,18 +1,20 @@
-package org.example;
+package org.example.data;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.example.exceptions.ProportionFormatException;
 
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode
 public class Task {
     private final MetricValue metricValue;
     private final String metric;
 
 
     public Task(String str) throws ProportionFormatException {
-        if (!str.matches("\\d+\\s\\S+\\s=\\s\\?\\s\\S+")) {
+        if (!str.matches("\\d+\\.{0,1}\\d*\\s\\S+\\s=\\s\\?\\s\\S+")) {
             throw new ProportionFormatException();
         }
         String[] arr = str.split(" ");

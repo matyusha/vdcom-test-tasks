@@ -1,9 +1,11 @@
-package org.example;
+package org.example.data;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.example.exceptions.ProportionFormatException;
 
 @Getter
+@EqualsAndHashCode
 public class Proportion {
     private final MetricValue metricValue1;
     private final MetricValue metricValue2;
@@ -14,10 +16,10 @@ public class Proportion {
     }
 
     public Proportion(String str) throws ProportionFormatException {
-        if (!str.matches("\\d+\\s\\S+\\s=\\s\\d+\\s\\S+")) {
+        if (!str.matches("\\d+\\.{0,1}\\d*\\s\\S+\\s=\\s\\d+\\.{0,1}\\d*\\s\\S+")) {
             throw new ProportionFormatException();
         }
-        String[] arr = str.split(" ");
+        String[] arr = str.split("\\s");
         metricValue1 = new MetricValue(Double.parseDouble(arr[0]), arr[1]);
         metricValue2 = new MetricValue(Double.parseDouble(arr[3]), arr[4]);
     }

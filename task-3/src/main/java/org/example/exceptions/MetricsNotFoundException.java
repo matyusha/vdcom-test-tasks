@@ -1,7 +1,7 @@
 package org.example.exceptions;
 
-public class MetricsNotFoundException extends Exception{
+public class MetricsNotFoundException extends Exception {
     public MetricsNotFoundException(String message) {
-        super(message + "Conversion not possible.");
+        super(String.format("%s Conversion not possible.", message));
     }
 }

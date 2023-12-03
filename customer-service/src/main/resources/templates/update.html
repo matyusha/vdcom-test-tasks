@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Update page</title>
+    <meta charset="UTF-8"/>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css} "/>
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                aria-controls="navbarResponsive"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/customer">Home</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div>
+    <hr/>
+    <form th:action="@{/customer}" th:object="${customer}" method="POST">
+
+        <div class="form-label">
+
+            <label class="form-label">
+                <input type="text" th:field="*{name}" class="form-control col-4 mb-4" placeholder="Enter Name"/>
+            </label>
+
+            <label>
+                <input type="text" th:field="*{lastName}" class="form-control col-4 mb-4" placeholder="Enter Lastname"/>
+            </label>
+
+            <label>
+                <input type="text" th:field="*{mail}" class="form-control col-4 mb-4" placeholder="Enter email"/>
+            </label>
+
+            <label>
+                <select class="form-select" name="gender" th:value="*{gender}">
+                    <option th:each="gender : ${T(com.example.models.Gender).values()}"
+                            th:text="${gender}">
+                    </option>
+                </select>
+            </label>
+
+        </div>
+        <button type="submit" class="btn btn-primary col-2">Save</button>
+        <input type="hidden" th:field="*{id}"/>
+    </form>
+    <hr/>
+</div>
+
+<script>
+
+
+</script>
+</body>
+</html>

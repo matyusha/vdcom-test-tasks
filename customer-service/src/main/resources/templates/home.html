@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Home page</title>
+    <meta charset="UTF-8"/>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css} "/>
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+                aria-controls="navbarResponsive"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/customer">Home</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-10 mt-5 mb-5">
+            <table id="example" class="table" style="width: 100%">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>LastName</th>
+                    <th>Mail</th>
+                    <th>Gender</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="customer : ${customers.getContent()}">
+                    <td>
+                        <a class="link-info" th:href="@{'/customer/form/update/' + ${customer.getId()}}"
+                           th:text="${customer.getId()}"></a>
+                    </td>
+                    <td th:text="${customer.getName()}">Name</td>
+                    <td th:text="${customer.getLastName()}">LastName</td>
+                    <td th:text="${customer.getMail()}">Mail</td>
+                    <td th:text="${customer.getGender()}">Gender</td>
+                    <td>
+                        <form th:action="@{'/customer/' + ${customer.getId()}}" th:method="delete">
+                            <button type="submit" class="btn btn-warning">X</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <a th:href="@{/customer/form/create}" class="btn btn-success">
+                Create new
+            </a>
+
+            <hr/>
+            <nav aria-label="Page navigation" class="paging">
+                <ul class="pagination" th:if="${customers.getTotalPages() > 1}">
+                    <li class="page-item" th:classappend="${!customers.hasPrevious()? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{'/customer?page=' + ${customers.getNumber() - 1}}"
+                           tabindex="-1">Previous</a>
+                    </li>
+                    <th:block th:each="item : ${#numbers.sequence(0, customers.getTotalPages() - 1)}">
+                        <li class="page-item" th:classappend="${item == customers.getNumber()? 'active' : ''}">
+                            <a class="page-link" th:href="@{'/customer?page=' + ${item}}"
+                               th:text="${item}"></a>
+                        </li>
+                    </th:block>
+                    <li class="page-item" th:classappend="${!customers.hasNext()? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{'/customer?page=' + ${customers.getNumber() + 1}}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <a th:href="@{/customer/form/upload}" class="btn btn-success">
+        Upload customers
+    </a>
+</div>
+
+<script>
+
+
+</script>
+</body>
+</html>

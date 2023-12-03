@@ -1,26 +1,39 @@
-package org.example;
+package org.example.services;
 
+import lombok.RequiredArgsConstructor;
+import org.example.data.MetricResult;
+import org.example.data.MetricValue;
+import org.example.data.Proportion;
+import org.example.data.Task;
 import org.example.exceptions.ConversionNotPossibleException;
 import org.example.exceptions.MetricsNotFoundException;
 
 import java.util.*;
 
-import static org.example.DataService.*;
-
+@RequiredArgsConstructor
 public class MetricsService {
 
-    public void doTasks() {
-        for (Task task : tasks) {
-            try {
-                Proportion proportion = doTask(task);
-                System.out.println(proportion);
-            } catch (ConversionNotPossibleException | MetricsNotFoundException e) {
-                System.out.println(e.getMessage());
-            }
-        }
+    private final DataService dataService;
+
+    public List<MetricResult> doTasks() {
+
+        return dataService.getTasks().stream()
+                .map(task -> {
+                    try {
+                        final Proportion proportion = doTask(task);
+                        return MetricResult.builder()
+                                .proportion(proportion)
+                                .build();
+                    } catch (ConversionNotPossibleException | MetricsNotFoundException e) {
+                        return MetricResult.builder()
+                                .message(e.getMessage())
+                                .build();
+                    }
+                })
+                .toList();
     }
 
-    private Proportion doTask(Task task) throws ConversionNotPossibleException, MetricsNotFoundException {
+    public Proportion doTask(Task task) throws ConversionNotPossibleException, MetricsNotFoundException {
         double result = findMetricValue(task, findWays(task));
         return new Proportion(task.getMetricValue(), new MetricValue(result, task.getMetric()));
     }
@@ -32,20 +45,22 @@ public class MetricsService {
         Map<String, String> prev = new HashMap<>();
 
         queue.add(task.getMetric());
-        if (DataService.graph.containsKey(task.getMetric())) {
+        if (dataService.getGraph().containsKey(task.getMetric())) {
             used.add(task.getMetric());
         } else {
-            throw new MetricsNotFoundException("Proportions containing the metric " + task.getMetric() + " not found. ");
+            throw new MetricsNotFoundException(String.format(
+                    "Proportions containing the metric %s not found.", task.getMetric()));
         }
-        if (DataService.graph.containsKey(task.getMetricValue().getMetric())) {
+        if (dataService.getGraph().containsKey(task.getMetricValue().getMetric())) {
             used.add(task.getMetric());
         } else {
-            throw new MetricsNotFoundException("Proportions containing the metric " + task.getMetricValue().getMetric() + " not found. ");
+            throw new MetricsNotFoundException(String.format(
+                    "Proportions containing the metric %s not found.", task.getMetricValue().getMetric()));
         }
 
         while (!queue.isEmpty()) {
             String current = queue.poll();
-            for (String next : DataService.graph.get(current)) {
+            for (String next : dataService.getGraph().get(current)) {
                 if (!used.contains(next)) {
                     queue.add(next);
                     used.add(next);
@@ -64,10 +79,10 @@ public class MetricsService {
     private double findMetricValue(Task task, Map<String, String> prev) {
         String current = task.getMetricValue().getMetric();
         double result = task.getMetricValue().getValue();
-        while (true) {
+        while (!current.equals(task.getMetric())) {
             String next = prev.get(current);
             String finalCurrent = current;
-            Proportion proportion = DataService.proportions.stream()
+            Proportion proportion = dataService.getProportions().stream()
                     .filter(p -> {
                         String metric1 = p.getMetricValue1().getMetric();
                         String metric2 = p.getMetricValue2().getMetric();
@@ -80,11 +95,7 @@ public class MetricsService {
             } else {
                 result = result * proportion.getMetricValue1().getValue() / proportion.getMetricValue2().getValue();
             }
-            if (next.equals(task.getMetric())) {
-                break;
-            } else {
-                current = next;
-            }
+            current = next;
         }
         return result;
     }
